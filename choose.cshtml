@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "choose";
+}
+
+<h2>CHOOSE YOUR NOTIFIER</h2>
+<div>
+    <label>USERS TO BE NOTIFIED</label>
+   @Html.DropDownList("Users", (MultiSelectList)ViewBag.dropdownvalues)
+</div>
+<div>
+    <label>EMAIL</label>
+    @Html.TextBox("EMAIL", null, new { placeholder = "ENTER EMAIL ID" })
+</div>
+<div>
+    <label>MESSAGE</label>
+    @Html.TextBox("MESSAGE", null, new { placeholder = "ENTER YOUR PHONE NO" })
+</div>
+<div>
+    <label>SLACK</label>
+    @Html.TextBox("SLACK", null, new { placeholder = "ENTER SLACK ID" })
+</div>
+<input type="button" value="SUBMIT" id="btnStart" />
+<body>
+    <script src="../Scripts/jquery.min.js"></script>
+    <script src="/lib/jquery.plugin.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <script>
+            $(function () {
+                $('#btnStart').unbind('click');
+                $('#btnStart').on('click', function () {
+                    $.ajax({
+                        url: "/Jira/Selection",
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            EMAIL: $("#EMAIL").val(),
+                            MESSAGE: $("#MESSAGE").val(),
+                            SLACK: $("#SLACK").val(),                          
+                        }),
+                        async: false
+                    });
+                });
+            });
+    </script>
+</body>

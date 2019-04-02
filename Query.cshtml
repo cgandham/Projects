@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Query";
+}
+
+<h2>Query</h2>
+<div>
+    <label>JQL QUERY</label>
+    @Html.TextBox("txtValue", null, new { placeholder = "enter Query" })
+</div>
+
+
+
+<input type="submit" value="SEARCH" id="btnStart"  />
+<body>
+   
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/jquery.plugin.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <script>
+            $(function () {
+                $('#btnStart').unbind('click');
+                $('#btnStart').on('click', function () {
+                    $.ajax({
+                        url: "/Jira/Restcall",
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            txtValue: $("#txtValue").val(),                         
+                        }),
+                        async: false
+                    });
+                });
+            });
+            $(function () {
+
+            })
+    </script>
+</body>

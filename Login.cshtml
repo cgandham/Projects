@@ -1,0 +1,21 @@
+﻿@model HostJiraIntegretion.Models.login
+@{
+    ViewBag.Title = "log1";
+}
+<h2>LOGIN HERE</h2>
+
+
+@using (Html.BeginForm("lo", "Jira", FormMethod.Post))
+{
+    <br />
+    @Html.DisplayNameFor(x => x.username)
+
+    @Html.TextBoxFor(x => x.username)
+    <br />
+    <br />
+    @Html.DisplayNameFor(x => x.password)
+
+    @Html.TextBoxFor(x => x.password)
+
+    <button type="submit">LOGIN</button>
+}
