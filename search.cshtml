@@ -1,0 +1,550 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    @*<link rel="stylesheet" type="text/css" href="style.css">*@
+    <style>
+        pre {
+            background-color: ghostwhite;
+            border: 1px solid silver;
+            padding: 10px 20px;
+            margin: 20px;
+        }
+
+        .json-key {
+            color: brown;
+        }
+
+        .json-value {
+            color: navy;
+        }
+
+        .json-string {
+            color: olive;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .Tree ul, li {
+            position: relative;
+        }
+
+        #SearchResultList {
+            overflow: hidden;
+            overflow-y: scroll;
+            float: left;
+        }
+
+        .Tree ul {
+            list-style: none;
+            padding-left: 32px;
+        }
+
+        .Tree li::before, li::after {
+            content: "";
+            position: absolute;
+            left: -12px;
+        }
+
+        .Tree li::before {
+            border-top: 1px solid #000;
+            top: 9px;
+            width: 8px;
+            height: 0;
+        }
+
+        .Tree li::after {
+            border-left: 1px solid #000;
+            height: 100%;
+            width: 0px;
+            top: 2px;
+        }
+
+        .Tree ul > li:last-child::after {
+            height: 8px;
+        }
+
+        .optlist {
+            float: none;
+            color: black;
+            padding: 5px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+            .optlist:hover {
+                background-color: #ddd;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+
+        #DimensionInfo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1060;
+            display: none;
+            padding: 9px 14px;
+            padding-top: 9px;
+            padding-right: 14px;
+            padding-bottom: 9px;
+            padding-left: 14px;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: left;
+            text-align: start;
+            text-decoration: none;
+            text-shadow: none;
+            text-transform: none;
+            letter-spacing: normal;
+            word-break: normal;
+            word-spacing: normal;
+            word-wrap: normal;
+            white-space: normal;
+            background-color: #fff;
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+            border: 1px solid #ccc;
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 6px;
+            -webkit-box-shadow: 0 5px 5px rgba(0,0,0,.2);
+            box-shadow: 0 5px 10px rgba(0,0,0,.2);
+            line-break: auto;
+            font-family: consolas, courier, monaco, menlo, monospace;
+        }
+
+        .Type {
+            text-align: center;
+            font-family: consolas, courier, monaco, menlo, monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .arrow {
+            border-top-width: 11px;
+            border-right-width: 11px;
+            border-bottom-width: 11px;
+            border-left-width: 11px;
+            position: absolute;
+            display: block;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            top: 50%;
+            left: -11px;
+            margin-top: -11px;
+            border-right-color: #999;
+            border-right-color: rgba(0,0,0,.25);
+            border-left-width: 0;
+        }
+
+            .arrow:after {
+                position: absolute;
+                display: block;
+                width: 0;
+                height: 0;
+                border-color: transparent;
+                border-style: solid;
+                border-width: 10px;
+                bottom: -10px;
+                left: 1px;
+                content: " ";
+                border-right-color: #fff;
+                border-left-width: 0;
+            }
+
+        .popover-title {
+            padding: 8px 14px;
+            margin: 0;
+            font-size: 15px;
+            font-weight: bold;
+            background-color: #f7f7f7;
+            border-bottom: 1px solid #ebebeb;
+            border-radius: 5px 5px 0 0;
+            font-family: consolas, courier, monaco, menlo, monospace;
+        }
+
+        input[type="text"] {
+            border: none;
+            padding: 10px;
+            margin: 10px;
+            height: 20px;
+            width: 500px;
+            border: 1px solid #b9b9b9;
+            outline: none;
+            border-radius: 30px;
+            box-shadow: 4px 3px 5px #c6c6c6;
+            background: url('http://i47.tinypic.com/r02vbq.png') no-repeat;
+            background-position: -15px -17px;
+            padding-left: 30px;
+        }
+
+
+        #post {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.428571429;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 20px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            color: #fff;
+            background-color: #5bc0de;
+            border-color: #46b8da;
+        }
+
+        button {
+            background-image: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4d90fe;
+        }
+
+        input [type="text"] {
+            border-radius: 2px;
+            background: #f2f2f2;
+            border: 1px solid #f2f2f2;
+            color: #757575;
+            cursor: default;
+            font-size: 14px;
+            font-weight: bold;
+            width: 100px;
+            padding: 0 16px;
+            height: 36px;
+        }
+
+            input [type="text"]:hover {
+                box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+                background: #f8f8f8;
+                border: 1px solid #c6c6c6;
+                box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+                color: #222;
+                border-color: #a0a0a0 #b9b9b9 #b9b9b9 #b9b9b9;
+            }
+
+
+        #Input {
+            font-size: 17px;
+            font-family: "Georgia, 'Times New Roman', Times, serif";
+        }
+    </style>
+    <script src="http://d3js.org/d3.v3.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            document.getElementById("Input").value = "Show ";
+            document.getElementById("Input").focus();
+            GetDimensions(document.getElementById("Input"));
+        });
+
+        function Send() {
+            var Data = [];
+            $.ajax({
+                type: "POST",
+                url: "/ES/SearchQuery",
+                data: "{query :\"" + document.getElementById("Input").value.substring(5, document.getElementById("Input").value.length) + "\"}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (msg, textStatus) {
+                    Data = msg;
+                    alert("jarvis posted");
+                }, error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                }
+            });
+            document.getElementById("JSONID").style.display = "block";
+            document.getElementById("json").innerHTML = library.json.prettyPrint(Data)
+            return Data;
+        }
+
+
+
+        function GetLabels(Input) {
+            var alabels;
+            var labels;
+            var Index = GetIndex(Input);
+            Input = Input.substring(Index);
+            $.ajax({
+                type: "POST",
+                url: "/ES/GetSuggestionLabels",
+                data: "{query :\"" + Input + "\"}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (msg, textStatus) {
+                    window.alabels = msg;
+                    labels = msg.map(a => a.Label);
+
+                }, error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                }
+            });
+
+            return labels;
+        }
+        function GetIndex(Input) {
+            var By = "by ", Comma = ",", Show = "Show";
+            var ByIndex = -1, CommaIndex = -1, ShowIndex = -1, Index = 0;
+            ByIndex = Input.lastIndexOf(By);
+            CommaIndex = Input.lastIndexOf(Comma);
+            ShowIndex = Input.lastIndexOf(Show);
+            if (ByIndex > CommaIndex && ByIndex != -1 && ByIndex > ShowIndex) {
+                Index = ByIndex + 2;
+            }
+            else if (ByIndex < CommaIndex && CommaIndex != -1 && CommaIndex > ShowIndex) {
+                Index = CommaIndex + 1;
+            } else {
+                Index = ShowIndex + 5;
+            }
+            return Index;
+        }
+
+
+
+        //function onItemClick(element) {
+        //    $("#DimensionInfo").hide();
+        //    var textValue = document.getElementById("Input").value;
+        //    var AND = "and", OR = "or";
+        //    var operate = true;
+        //    var AndIndex = -1, OrIndex = -1,Index=-1;
+        //    AndIndex = textValue.lastIndexOf(AND);
+        //    OrIndex = textValue.lastIndexOf(OR);
+        //    if ((AndIndex > OrIndex) & AndIndex != -1) {
+        //        Index = AndIndex +4;
+        //    } else if (OrIndex != -1) {
+        //        Index = OrIndex +3;
+        //    }else{
+        //        document.getElementById("Input").value = element.innerText;
+        //        operate = false;
+        //    }
+        //    if (operate) {
+        //        var stay = textValue.substring(0, Index);
+        //        var select = element.innerText;
+        //            document.getElementById("Input").value = stay+select;
+        //    }
+        //    $("#SearchResultList").remove();
+        //    document.getElementById("Input").focus();
+        //}
+        //function GetDimensions(element)
+        //{
+        //   var  textValue = element.value;
+        //    var AND = "and", OR = "or";
+        //    var operate = true;
+        //    var AndIndex = -1, OrIndex = -1, Index = -1;
+        //    AndIndex = textValue.lastIndexOf(AND);
+        //    OrIndex = textValue.lastIndexOf(OR);
+        //    if ((AndIndex > OrIndex) & AndIndex != -1) {
+        //        Index = AndIndex + 4;
+        //    } else if (OrIndex != -1) {
+        //        Index = OrIndex + 3;
+        //    }
+        //    var searchString = "";
+        //    if (Index != -1) {
+        //        searchString = textValue.substring(Index, element.value.length);
+        //    } else {
+        //        searchString = textValue;
+        //    }
+        //    $('#search-results').show();
+        //    var results = GetLabels(searchString);
+        //    console.log("Search = " + searchString);
+        //    $("#SearchResultList").remove();
+        //    //var val =30+ (element.value.length)*7;
+        //    $('#search-results').append("<ul id='SearchResultList' style='height:400px;'></ul>");
+        //    //$('#SearchResultList').css({
+        //    //    "left": val + "px"
+        //    //})
+        //        for (var cnt = 0; cnt < results.length; cnt++) {
+        //            $("#SearchResultList").append("<li class = 'optlist' index='" + cnt + "'value=" + results[cnt] + " onclick='onItemClick(this)' onmouseover='onItemMouseOver(this)' onmouseout='onItemMouseOut(this)' >" + results[cnt] + "</li>");
+        //               }
+        //}
+
+        function onItemClick(element) {
+            $("#DimensionInfo").hide();
+            var textValue = document.getElementById("Input").value;
+            Index = GetIndex(textValue);
+                var stay = textValue.substring(0, Index);
+                var select = element.innerText;
+                document.getElementById("Input").value = stay +" "+  select;
+
+            $("#SearchResultList").remove();
+            document.getElementById("Input").focus();
+
+        }
+        function GetDimensions(element) {
+
+            $('#search-results').show();
+            var results = GetLabels(element.value);
+            console.log("Search = " + element.value);
+            $("#SearchResultList").remove();
+            //var val =30+ (element.value.length)*7;
+            $('#search-results').append("<ul id='SearchResultList' style='height:400px;width:400px;'></ul>");
+            //$('#SearchResultList').css({
+            //    "left": val + "px"
+            //})
+            for (var cnt = 0; cnt < results.length; cnt++) {
+                $("#SearchResultList").append("<li class = 'optlist' index='" + cnt + "'value=" + results[cnt] + " onclick='onItemClick(this)' onmouseover='onItemMouseOver(this)' onmouseout='onItemMouseOut(this)' >" + results[cnt] + "</li>");
+            }
+        }
+        //function GetSelectedInfo(element)
+        //{
+        //    $("#DimensionInfo").hide();
+        //    var mydata = [];
+        //    var info = alabels[element.getAttribute("index")];
+        //    mydata.push(info);
+        //    console.log(mydata);
+        //    $.ajax({
+        //        url: "/ES/GetSelectedData",
+        //        type: 'POST',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: 'json',
+        //        data: JSON.stringify({
+        //             info,
+        //        }),
+        //        async: false
+        //    });
+        //}
+
+
+        function onItemMouseOver(element)
+        {
+            var label = alabels[element.getAttribute("index")];
+            var path = label.ParentLabelPath;
+            var n = path.lastIndexOf(",");
+            if(n!=-1)
+            path = path.substring(0, n)
+            var pathnames = path.split(',');
+            var html = "";
+                    var d = $("#DimensionInfo");
+                html = "<div class=\"arrow\" style=\"top: 20px;\"></div><div class='hj'><h3 class=\"popover-title\">Type:</h3><div class=\"Type\">" + label.Type + "</div><br/><h3 class=\"popover-title\">Parent Path:</h3></div><div class= \"Tree\"style=\"text-align: left;\"><ul class=\"path\">";
+
+            //for (var i = 0;i < pathnames.length; i++)
+            //{
+
+            //    html += "<li>" + pathnames[i] + "</li>"
+            //}
+                if (pathnames.length>0) {
+                    html += "<li><label>> " + pathnames[0]+"</label>";
+                }
+            for (var i = 1;i < pathnames.length; i++)
+            {
+                html += "<ul><li><label>> " + pathnames[i] + "</label>";
+
+            }
+            //for (var i = 0; i < pathnames.length; i++) {
+            //    //d.append("</li></ul>");
+            //    html += "</li></ul>";
+            //}
+            html += "<ul></div>";
+            //html += "</div>";
+            d.html(html);
+                    var offset = $(element).offset();
+                    d.css({
+                        "top": (offset.top ) + "px",
+                        "left": offset.left + 400 + "px"
+                    })
+                    d.show();
+
+        }
+        function onItemMouseOut(element)
+        {
+           $("#DimensionInfo").hide();
+
+        }
+        function GetLast(Input)
+            {
+                // var InputArray = Input.split(" ");
+                // return InputArray[InputArray.length - 1];
+                var InputArray = Input.substring(Input.lastIndexOf(" ") + 1, Input.length);
+                return InputArray;
+        }
+
+
+
+
+
+
+            if (!library)
+                var library = {};
+
+            library.json = {
+                replacer: function (match, pIndent, pKey, pVal, pEnd) {
+                    var key = '<span class=json-key>';
+                    var val = '<span class=json-value>';
+                    var str = '<span class=json-string>';
+                    var r = pIndent || '';
+                    if (pKey)
+                        r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
+                    if (pVal)
+                        r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
+                    return r + (pEnd || '');
+                },
+                prettyPrint: function (obj) {
+                    var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
+                    return JSON.stringify(obj, null, 3)
+                       .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
+                       .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                       .replace(jsonLine, library.json.replacer);
+                }
+            };
+            function HideList() {
+                console.log("blur");
+                $('#search-results').hide();
+            }
+
+    </script>
+
+</head>
+<body>
+    <div style="font-size:72px;font-family: Georgia, 'Times New Roman', Times, serif ;text-align:center">Jarvis Query</div>
+    <div style="height:50px"></div>
+
+    <form id="form" role="form" novalidate>
+        <div>
+            <input type="text" id="Input" size="148" onkeyup="GetDimensions(this)" autocomplete="off" style="width:85%; height:35px; border-radius:20px;" />
+            <button type="button" id="post" onclick="Send()" value="POST JARVIS" style="height:35px;">
+                <span class="glyphicon glyphicon-search"></span> Post Jarvis
+            </button>
+            <div id="search-results" style="width:400px;">
+                <ul id="SearchResultList"></ul>
+                <div id="DimensionInfo"> </div>
+            </div>
+
+        </div>
+
+        <div id="JSONID" style="display:none;top:600px;position:absolute;">
+            <pre id="json"></pre>
+
+        </div>
+
+    </form>
+</body>
+</html>
