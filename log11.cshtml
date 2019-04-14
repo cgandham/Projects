@@ -1,0 +1,21 @@
+﻿@model ws22.Models.log11
+   
+@{
+    ViewBag.Title = "log11";
+}
+<h2>login</h2>
+@using (Html.BeginForm())
+{
+
+
+    @Html.DisplayNameFor(x => x.username)
+    @Html.TextBoxFor(x => x.username)
+
+    @Html.DisplayNameFor(x => x.password)
+    @Html.TextBoxFor(x => x.password)
+    
+    <input type="submit" value="login" />
+    <input type="button" value="single sign on" onclick="window.location.href=' @Url.Action( "hey","w22" )'"/>
+    @*<input type="button" value="google sign in" onclick="window.location.href=' @Url.Action( "hello","w22" )'" />*@
+}
+   

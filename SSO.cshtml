@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "SSO";
+}
+
+<h2>SSO</h2>
+<form id="ssoForm1" method="post" action="http://ws22.com/w22/hi">
+    <input type="hidden" name="SAMLResponse" value="@Model.SAMLResponse" />
+    <input type="hidden" name="RelayState" value="@Model.RelayState" />
+    @*<input type="submit" value="login" />*@
+</form>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#ssoForm1').submit();
+});
+</script>
+
